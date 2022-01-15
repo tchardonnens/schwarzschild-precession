@@ -7,4 +7,34 @@ Resources to create this simulation :
 
 - Motion of test particles in the gravitational field of a central fixed mass M : https://en.wikipedia.org/wiki/Schwarzschild_geodesics
 
-In order to run this jupyter notebook, you must have installed on your computer, latex, activated the conda env called 'precession-env' and run the jupyter notebook server.
+<h2>How to make it run?</h2>
+
+The main file is a jupyter notebook. I created a conda env in order to get to work faster ;-)
+
+Install Anaconda:
+
+https://docs.anaconda.com/anaconda/install/windows/
+</br>
+For Apple Silicon I use Miniconda:
+<code>brew install miniforge</code>
+
+Jupyter Notebook: 
+
+https://jupyter.org/install
+
+Install Latex: 
+
+For Windows: https://miktex.org/download
+</br>
+For MacOS: https://tug.org/mactex/
+
+Commands:
+- create the conda env (you have to be in the folder where the .yml file is): 
+<code>conda env create -f precession-env.yml</code>
+
+- activate the env to see '(precession2)' before your terminal line:
+<code> conda activate precession2 </code>
+
+- spin up the Jupyter Notebook:
+<code>jupyter notebook</code>
+
