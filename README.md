@@ -6,3 +6,5 @@ Resources to create this simulation :
 - Nobel Price 2020, Detection of the Schwarzschild precession in the orbit of the star S2 near the Galactic centre massive black hole : https://arxiv.org/pdf/2004.07187.pdf
 
 - Motion of test particles in the gravitational field of a central fixed mass M : https://en.wikipedia.org/wiki/Schwarzschild_geodesics
+
+In order to run this jupyter notebook, you must have installed on your computer, latex, activated the conda env called 'precession-env' and run the jupyter notebook server.
