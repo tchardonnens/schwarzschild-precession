@@ -41,7 +41,7 @@ Commands:
 Don't forget to change the kernel on your Jupyter Notebook to precession2.
 https://queirozf.com/entries/jupyter-kernels-how-to-add-change-remove
 
-Our animation is still buggy. 
+Our animation is still buggy and we need to add the Doppler model to it.
 
 
 
