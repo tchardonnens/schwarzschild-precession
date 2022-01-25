@@ -1,4 +1,4 @@
-# schwarzschild-precession
+# schwarzschild-precession - APP Groupe 7B
 Simulate the trajectory of the star S2 in orbit around the black hole at the center of our galaxy and display in real time the value of the shift between the frequency of the received electromagnetic wave and the emitted wave (distinguishing between the Einstein effect, the Doppler effect of the first and second order).
 
 Resources to create this simulation : 
@@ -40,5 +40,8 @@ Commands:
 
 Don't forget to change the kernel on your Jupyter Notebook to precession2.
 https://queirozf.com/entries/jupyter-kernels-how-to-add-change-remove
+
+Our animation is still buggy and we need to add the Doppler model to it.
+
 
 
