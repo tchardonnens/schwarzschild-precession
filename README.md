@@ -41,7 +41,10 @@ Commands:
 Don't forget to change the kernel on your Jupyter Notebook to precession2.
 https://queirozf.com/entries/jupyter-kernels-how-to-add-change-remove
 
-Our animation is still buggy and we need to add the Doppler model to it.
+
+Modeling of the orbit of the star S2 around Sgr A* : 
+![gravity-sp](https://user-images.githubusercontent.com/61554870/152453867-78fc61d1-0fdc-40f1-bc95-80f916af6b4c.gif)
+
 
 
 
