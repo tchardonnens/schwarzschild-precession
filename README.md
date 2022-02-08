@@ -55,4 +55,5 @@ Line of sight velocity of the star S2 in function of the time in years:
 
 Frequency received on Earth in function of the time on one period of the orbit of the star around SgrA* in years:
 
-![line-of-sight-velocity-years](https://user-images.githubusercontent.com/61554870/153083138-d6c75314-e251-4184-9ba9-0ca709cf53af.png)
+![Frequency-Received-Years](https://user-images.githubusercontent.com/61554870/153083680-4095afbd-0df2-4847-8097-ee1d19c69bb0.png)
+
