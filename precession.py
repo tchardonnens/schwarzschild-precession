@@ -1,5 +1,7 @@
 import numpy
+import math
 import astropy.units as u
+import astropy.constants as const
 import rebound
 from galpy.orbit import Orbit
 from galpy.util import bovy_coords
@@ -27,7 +29,7 @@ sim.add(m=0.,
         inc=(134.567*u.deg).to_value(u.rad),
         omega=(66.263*u.deg).to_value(u.rad),
         Omega=(228.171*u.deg).to_value(u.rad),
-        T=(8.37900*u.yr).to_value(u.yr)-0.35653101) # time since 2010's apocenter (calculated: 2010+0.35653101)
+        T=(8.37900*u.yr).to_value(u.yr)-0.35653101)
 
 ogc= Orbit([0.,0.,0.,0.,0.,0.],ro=R0,vo=vo)
 
@@ -43,6 +45,7 @@ periods= 2.
 times= numpy.linspace(0.,periods*16.0455,100001)*u.yr # 2 periods
 kp= KeplerPotential(amp=MSgrA,ro=R0)
 o.integrate(times,kp)
+
 mpl.rcParams['figure.figsize'] = (5., 10.)
 o.plot(d1='(ra-{})*{}'.format(ogc.ra(),
                               (u.deg/u.arcsec).to(u.dimensionless_unscaled,equivalencies=u.dimensionless_angles())),
@@ -54,11 +57,10 @@ o.plot(d1='(ra-{})*{}'.format(ogc.ra(),
 plt.plot([0.],[0.],'k+',ms=30.)
 plt.xlim(0.055,-0.075)
 plt.ylim(-0.03,0.21)
-plt.show()
 
 from galpy.potential.DissipativeForce import DissipativeForce
 from astropy.constants import c
-c= c.to_value(u.km/u.s)
+c = c.to_value(u.km/u.s)
 class SchwarzschildPrecessionForce(DissipativeForce):
     def __init__(self,amp=1.,fsp=1.,gamma=1.,beta=1.,ro=None,vo=None):
         DissipativeForce.__init__(self,amp=amp,ro=ro,vo=vo,
@@ -89,22 +91,44 @@ class SchwarzschildPrecessionForce(DissipativeForce):
 
 sp= SchwarzschildPrecessionForce(amp=MSgrA,ro=R0,fsp=1.)
 
-times= numpy.linspace(0.,10.*16.0455,1001)*u.yr # 4 periods
+periods = 4.
+times= numpy.linspace(0.,periods*16.0455,1001)*u.yr
 o.integrate(times,kp)
 osp= o()
 osp.integrate(times,kp+sp)
 
-figsize=(5,11)
-osp.plot(d1='(ra-{})*{}'.format(ogc.ra(),
-                              (u.deg/u.arcsec).to(u.dimensionless_unscaled,equivalencies=u.dimensionless_angles())),
-       d2='(dec-{})*{}'.format(ogc.dec(),
-                              (u.deg/u.arcsec).to(u.dimensionless_unscaled,equivalencies=u.dimensionless_angles())),
+mpl.rcParams['figure.figsize'] = (5., 10.)
+osp.plot(
+        d1='(ra-{})*{}'.format(ogc.ra(),
+        (u.deg/u.arcsec).to(u.dimensionless_unscaled,equivalencies=u.dimensionless_angles())),
+        d2='(dec-{})*{}'.format(ogc.dec(),
+        (u.deg/u.arcsec).to(u.dimensionless_unscaled,equivalencies=u.dimensionless_angles())),
         xlabel=r'$\Delta \mathrm{RA}\,(\mathrm{arcsec})$',
-      ylabel=r'$\Delta \mathrm{Dec}\,(\mathrm{arcsec})$')
+        ylabel=r'$\Delta \mathrm{Dec}\,(\mathrm{arcsec})$')
+
 plt.plot([0.],[0.],'k+',ms=30.)
 plt.xlim(0.075,-0.095)
 plt.ylim(-0.03,0.21)
-plt.show()
+plt.title("Orbite de S2 autour de SgrA*")
+
+plt.plot(o.time()*u.yr,o.vlos(times))
+plt.xlabel(r'$t\ (\mathrm{year})$')
+plt.ylabel(r'$V_{\mathrm{los}}\,(\mathrm{km\,s}^{-1})$');
+print(min(o.vlos(times)), max(o.vlos(times)))
+
+fe = 1.36*10**14 # Fréquence d'émission de S2
+vr = 7700.
+v = 4000.
+fr = (fe*(1-(vr/c)+(vr**2/c**2)-(v**2/(2*c**2))))
+print("Frequency emmited by S2:", "{:.2e}".format(fe))
+print("Frequency received on Earth: "+"{:.2e}".format(fr))
+print("Frequency shift:", "{:.2e}".format(fe-fr))
+
+nperiods= 120.
+times= numpy.linspace(0.,nperiods*16.0455,1000001)*u.yr # n périodes
+o.integrate(times[times < 16.0455*u.yr],kp)
+osp= o()
+osp.integrate(times,kp+sp)
 
 def delta_ra(ra):
     return (ra-ogc.ra())*(u.deg/u.arcsec).to(u.dimensionless_unscaled,equivalencies=u.dimensionless_angles())
@@ -114,36 +138,56 @@ def delta_dec(dec):
 mpl.rcParams['figure.figsize'] = (6., 7.)
 
 fig, ax= plt.subplots()
-line2= plt.plot([0.],[0.],'k+',ms=10.)
+line2 = plt.plot([0.],[0.],'k+',ms=10.)
 
 plt.xlabel(r'$\Delta \mathrm{RA}\,(\mathrm{arcsec})$')
 plt.ylabel(r'$\Delta \mathrm{Dec}\,(\mathrm{arcsec})$')
 plt.xlim(0.075,-0.25)
 plt.ylim(-0.19,0.26)
 
-nperiods= 200.
-times= numpy.linspace(0.,nperiods*16.0455,1000001)*u.yr # 4 periods
-o.integrate(times[times < 16.0455*u.yr],kp)
-osp= o()
-osp.integrate(times,kp+sp)
-
 nstride= round(len(times)/nperiods)+1
+
 line,= ax.plot(delta_ra(osp.ra(times[:nstride])),delta_dec(osp.dec(times[:nstride])),'-')
-txt= ax.annotate(r'$\mathrm{year}=%.0f$' % (round(2010.35653101,-1)),
+
+orbitValue= ax.annotate(r'$\mathrm{year}=%.0f$' % (2010.),
                  (0.05,0.05),xycoords='axes fraction',
                  horizontalalignment='left',verticalalignment='bottom',size=18.)
+redshiftValue= ax.annotate(r'$\mathrm{Frequency\ shift}=%s$' % (0.),
+                 (0.05,0.05),xycoords='axes fraction',
+                 horizontalalignment='left',verticalalignment='top',size=18.)
+
 plt.legend(frameon=False,fontsize=18.,loc='upper right')
 
-def animate(ii):
-    minii= int(round((ii+0.5)*nstride))
-    maxii= int(round((ii+1.5)*nstride))
-    line.set_xdata(delta_ra(osp.ra(times[minii:maxii])))
-    line.set_ydata(delta_dec(osp.dec(times[minii:maxii])))
-    txt.set_text(r'$\mathrm{year}=%.0f$' % (round(2010.35653101+times[ii*nstride].to_value(u.yr),-1)))
+def update(i):
+    minRange= int(round((i+0.5)*nstride))
+    maxRange= int(round((i+1.5)*nstride))
+    line.set_xdata(delta_ra(osp.ra(times[minRange:maxRange])))
+    line.set_ydata(delta_dec(osp.dec(times[minRange:maxRange])))
+    orbitValue.set_text(r'$\mathrm{Year}=%.0f$' % (round(2010.35653101+times[i*nstride].to_value(u.yr),-1)))
+    v = o.vlos(times[i])
+    # Changing v for Vlos
+    fr = (fe*(1-(vr/c)+(vr**2/c**2)-(v**2/(2*c**2))))
+    shift = "{:.6e}".format(fe-fr)
+    redshiftValue.set_text(r'$\mathrm{Frequency\ shift}=%s$' % shift)
+    progress = (round(i*100/nperiods))
+    if progress%10==0:
+        print(progress, "%")
     return (line,)
-anim = animation.FuncAnimation(fig,animate,#init_func=init_anim_frame,
-                               frames=len(times)//nstride,interval=1,blit=True,repeat=True)
+
+anim = animation.FuncAnimation(fig,update,frames=len(times)//nstride,interval=1,blit=True,repeat=True)
 plt.tight_layout()
-anim.save('gravity-sp.gif',writer='ffmpeg',dpi=200)
-# The following is necessary to just get the movie, and not an additional initial frame
+anim.save('S2-SgrA.gif',writer='ffmpeg',dpi=200)
 plt.close()
+
+def distance(ra, dec):
+    return abs(delta_dec(dec)/delta_ra(ra))
+
+def fr(v):
+    return (fe*(1-(vr/c)+(vr**2/c**2)-(v**2/(2*c**2))))
+
+fig, ax= plt.subplots()
+
+plt.xlabel(r'$\mathrm{Time}\,(\mathrm{years})$')
+plt.ylabel(r'$\mathrm{Frequency Received}\,(\mathrm{Hz})$')
+
+line,= ax.plot(times[:nstride],fr(o.vlos(times[:nstride])),'-')
