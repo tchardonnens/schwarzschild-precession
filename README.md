@@ -53,6 +53,10 @@ Line of sight velocity of the star S2 in function of the time in years:
 
 ![line-of-sight-velocity-years](https://user-images.githubusercontent.com/61554870/153082970-410a0554-3d47-4040-85fe-9d800ef4d4eb.png)
 
+Animation of the orbit of S2 around SgrA* considering the Schwarzschild metric and showing the frequency shift (freq. emitted - freq. received):
+
+![S2-SgrA](https://user-images.githubusercontent.com/61554870/153083898-cc010ed0-dce8-4a6f-8568-bbf1117a506a.gif)
+
 Frequency received on Earth in function of the time on one period of the orbit of the star around SgrA* in years:
 
 ![Frequency-Received-Years](https://user-images.githubusercontent.com/61554870/153083680-4095afbd-0df2-4847-8097-ee1d19c69bb0.png)
